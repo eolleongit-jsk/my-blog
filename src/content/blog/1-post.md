@@ -2,7 +2,7 @@
 title: '초보 기획자를 위한 AI 생산성 도구 추천: 실무에서 바로 쓰는 7가지'
 description: '초보 기획자가 문서 작성, 리서치, 일정 관리, 협업 속도를 높일 수 있는 AI 생산성 도구 7가지를 실제 업무 흐름 기준으로 정리했습니다.'
 pubDate: 'May 09 2026'
-heroImage: '/images/blog-placeholder-2.jpg'
+heroImage: '/images/post02.png'
 ---
 
 기획 일을 시작하면 문서 정리, 자료 조사, 회의 준비, 일정 관리까지 동시에 해야 할 일이 정말 많습니다.  
