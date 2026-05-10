@@ -1,8 +1,14 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { DEFAULT_POST_IMAGE, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
 ---
 
 <!doctype html>
@@ -13,37 +19,268 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	<body>
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<div class="home-shell">
+				<section class="hero">
+					<h1>{SITE_TITLE}</h1>
+					<p class="lead">기획자가 배우는 IT 지식과 개발 경험을 공유합니다.</p>
+					<a class="cta" href="/blog">
+						블로그 보기
+						<span aria-hidden="true">→</span>
+					</a>
+				</section>
+
+				<section class="intro">
+					<article class="intro-item">
+						<div class="icon icon-blue">↗</div>
+						<h2>IT 트렌드</h2>
+						<p>기획자 관점에서 본 최신 IT 트렌드와 기술을 소개합니다.</p>
+					</article>
+					<article class="intro-item">
+						<div class="icon icon-green">⚡</div>
+						<h2>실무 팁</h2>
+						<p>바로 적용 가능한 도구 활용법과 생산성 개선 팁을 정리합니다.</p>
+					</article>
+					<article class="intro-item">
+						<div class="icon icon-purple">◌</div>
+						<h2>실무 경험</h2>
+						<p>기획자가 개발을 이해하면 생기는 시너지를 실제 사례로 공유합니다.</p>
+					</article>
+				</section>
+
+				<section class="home-posts">
+					<div class="section-title">
+						<h2>최신 글</h2>
+					</div>
+					<ul>
+					{
+						posts.map((post) => (
+								<li>
+									<a class="post-link" href={`/blog/${post.id}/`}>
+										<img
+											class="post-image"
+											width={900}
+											height={500}
+											src={post.data.heroImage ?? DEFAULT_POST_IMAGE}
+											alt={post.data.title}
+											loading="lazy"
+											decoding="async"
+										/>
+										<div class="post-body">
+											<p class="date">
+												<FormattedDate date={post.data.pubDate} />
+											</p>
+											<h3>{post.data.title}</h3>
+											<p class="description">{post.data.description}</p>
+											<p class="read-more">
+												더 읽기
+												<span aria-hidden="true">→</span>
+											</p>
+										</div>
+									</a>
+								</li>
+						))
+					}
+					</ul>
+				</section>
+			</div>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	main {
+		padding-top: 1rem;
+	}
+	.home-shell {
+		background: #f4f6fb;
+		border-radius: 24px;
+		overflow: hidden;
+	}
+	.hero {
+		padding: 3.4rem 1.4rem 3rem;
+		text-align: center;
+		background: #dde3f8;
+	}
+	.hero h1 {
+		max-width: 14ch;
+		margin: 0 auto;
+		font-size: 2.35rem;
+		line-height: 1.15;
+	}
+	.lead {
+		max-width: 520px;
+		margin: 1.1rem auto 0;
+		color: rgb(var(--gray-dark));
+		font-size: 1.1rem;
+	}
+	.cta {
+		display: inline-block;
+		margin-top: 1.6rem;
+		padding: 0.9rem 2.2rem;
+		border-radius: 999px;
+		background: linear-gradient(135deg, #316df7, #1f5de8);
+		color: #fff;
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.cta span {
+		margin-left: 0.45rem;
+	}
+	.intro {
+		padding: 3rem 1.2rem;
+		display: grid;
+		gap: 2.4rem;
+	}
+	.intro-item {
+		text-align: center;
+	}
+	.icon {
+		width: 80px;
+		height: 80px;
+		margin: 0 auto 1rem;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		font-size: 2rem;
+	}
+	.icon-blue {
+		background: #dbeafe;
+		color: #2563eb;
+	}
+	.icon-green {
+		background: #d1fae5;
+		color: #16a34a;
+	}
+	.icon-purple {
+		background: #f3e8ff;
+		color: #9333ea;
+	}
+	.intro-item h2 {
+		margin: 0;
+		font-size: 1.8rem;
+	}
+	.intro-item p {
+		max-width: 540px;
+		margin: 0.75rem auto 0;
+		color: rgb(var(--gray-dark));
+	}
+
+	.home-posts {
+		padding: 3rem 1rem 2.3rem;
+	}
+	.section-title {
+		margin-bottom: 1.2rem;
+		text-align: center;
+	}
+	.section-title h2 {
+		margin: 0;
+		font-size: 2.1rem;
+	}
+	.home-posts ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 1.1rem;
+	}
+	.post-link {
+		display: block;
+		border: 1px solid #e6e8ee;
+		border-radius: 16px;
+		background: #fff;
+		overflow: hidden;
+		text-decoration: none;
+	}
+	.post-link:hover {
+		transform: translateY(-2px);
+		transition: transform 0.2s ease;
+	}
+	.post-image {
+		display: block;
+		width: 100%;
+		height: 210px;
+		object-fit: cover;
+		border-radius: 0;
+	}
+	.post-body {
+		padding: 1rem 1.1rem 1.25rem;
+	}
+	.post-body h3 {
+		margin: 0.4rem 0 0;
+		font-size: 1.85rem;
+		line-height: 1.2;
+	}
+	.date {
+		margin: 0;
+		font-size: 1.2rem;
+		color: rgb(var(--gray));
+	}
+	.description {
+		margin: 0.65rem 0 0;
+		color: rgb(var(--gray-dark));
+		font-size: 1.08rem;
+	}
+	.read-more {
+		margin: 1.1rem 0 0;
+		color: var(--accent);
+		font-weight: 600;
+	}
+	.read-more span {
+		margin-left: 0.35rem;
+	}
+
+	@media (min-width: 900px) {
+		.intro {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+		.intro-item h2 {
+			font-size: 1.35rem;
+		}
+		.intro-item p {
+			font-size: 0.95rem;
+		}
+		.home-posts ul {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.home-posts li:first-child {
+			grid-column: span 2;
+		}
+		.home-posts li:first-child .post-image {
+			height: 280px;
+		}
+	}
+
+	@media (max-width: 720px) {
+		main {
+			padding-top: 0.65rem;
+		}
+		.home-shell {
+			border-radius: 20px;
+		}
+		.hero {
+			padding: 2.8rem 1.2rem 2.6rem;
+		}
+		.hero h1 {
+			font-size: 2.05rem;
+		}
+		.lead {
+			font-size: 1rem;
+		}
+		.intro-item h2 {
+			font-size: 1.9rem;
+		}
+		.section-title h2 {
+			font-size: 2rem;
+		}
+		.post-body h3 {
+			font-size: 1.45rem;
+		}
+		.date {
+			font-size: 1.05rem;
+		}
+		.description {
+			font-size: 1.05rem;
+		}
+	}
+</style>
