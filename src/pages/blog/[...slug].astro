@@ -9,12 +9,85 @@ export async function getStaticPaths() {
 		props: post,
 	}));
 }
+
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
 const { Content } = await render(post);
+
+const allPosts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const currentIndex = allPosts.findIndex((item) => item.id === post.id);
+const prevPost = currentIndex >= 0 ? allPosts[currentIndex + 1] : null;
+const nextPost = currentIndex >= 0 ? allPosts[currentIndex - 1] : null;
 ---
 
 <BlogPost {...post.data}>
 	<Content />
+
+	<nav class="post-navigation" aria-label="이전글 다음글">
+		{prevPost && (
+			<a class="post-nav-card" href={`/blog/${prevPost.id}/`}>
+				<span>이전글</span>
+				<strong>{prevPost.data.title}</strong>
+			</a>
+		)}
+
+		{nextPost && (
+			<a class="post-nav-card next" href={`/blog/${nextPost.id}/`}>
+				<span>다음글</span>
+				<strong>{nextPost.data.title}</strong>
+			</a>
+		)}
+	</nav>
 </BlogPost>
+
+<style>
+	.post-navigation {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin-top: 4rem;
+		padding-top: 2rem;
+		border-top: 1px solid #e5e7eb;
+	}
+
+	.post-nav-card {
+		display: block;
+		padding: 1.25rem;
+		border: 1px solid #e5e7eb;
+		border-radius: 14px;
+		text-decoration: none;
+		color: inherit;
+		background: #fff;
+	}
+
+	.post-nav-card span {
+		display: block;
+		margin-bottom: 0.5rem;
+		font-size: 0.875rem;
+		color: #6b7280;
+	}
+
+	.post-nav-card strong {
+		display: block;
+		font-size: 1rem;
+		line-height: 1.5;
+	}
+
+	.post-nav-card.next {
+		text-align: right;
+	}
+
+	@media (max-width: 640px) {
+		.post-navigation {
+			grid-template-columns: 1fr;
+		}
+
+		.post-nav-card.next {
+			text-align: left;
+		}
+	}
+</style>
