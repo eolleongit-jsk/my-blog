@@ -11,6 +11,7 @@ const blog = defineCollection({
 		description: z.string(),
 		// Transform string to Date object
 		pubDate: z.coerce.date(),
+		category: z.string().optional(),
 		updatedDate: z.coerce.date().optional(),
 		// `public/images` 아래 파일을 `/images/...` 로 참조
 		heroImage: z.string().optional(),

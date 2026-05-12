@@ -1,0 +1,110 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+
+	const categories = [
+		...new Set(
+			posts
+				.map((post) => post.data.category)
+				.filter(Boolean)
+		),
+	];
+
+	return categories.map((category) => ({
+		params: { category },
+		props: {
+			category,
+			posts: posts.filter(
+				(post) => post.data.category === category
+			),
+		},
+	}));
+}
+
+const { category, posts } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{category}</title>
+	</head>
+
+	<body>
+		<main class="category-page">
+			<h1>{category}</h1>
+
+			<div class="post-list">
+				{posts.map((post) => (
+					<a class="post-card" href={`/blog/${post.id}/`}>
+						<span class="date">
+							{post.data.pubDate.toLocaleDateString()}
+						</span>
+
+						<h2>{post.data.title}</h2>
+
+						<p>{post.data.description}</p>
+					</a>
+				))}
+			</div>
+		</main>
+	</body>
+</html>
+
+<style>
+	body {
+		font-family: sans-serif;
+		background: #fff;
+		color: #111;
+	}
+
+	.category-page {
+		max-width: 880px;
+		margin: 0 auto;
+		padding: 48px 20px;
+	}
+
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.post-list {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.post-card {
+		display: block;
+		padding: 1.5rem;
+		border: 1px solid #e5e7eb;
+		border-radius: 16px;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.post-card:hover {
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+	}
+
+	.date {
+		display: block;
+		font-size: 0.875rem;
+		color: #666;
+		margin-bottom: 0.5rem;
+	}
+
+	h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1.25rem;
+	}
+
+	p {
+		margin: 0;
+		color: #555;
+		line-height: 1.6;
+	}
+</style>

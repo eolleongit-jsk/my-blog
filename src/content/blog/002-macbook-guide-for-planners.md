@@ -2,6 +2,7 @@
 title: '기획자가 맥북 세팅할 때 꼭 챙겨야 할 기본 앱과 팁 정리'
 description: '기획자 입장에서 맥북 처음 사면 헷갈리기 쉬운 기본 세팅과 꼭 설치해야 하는 앱, 그리고 편리한 사용 팁들을 직접 써보고 정리한 경험 공유'
 pubDate: 'May 11 2026'
+category: 'gadgets'
 heroImage: '/images/post02.png'
 ---
 
