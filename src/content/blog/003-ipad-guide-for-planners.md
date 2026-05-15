@@ -2,7 +2,7 @@
 title: '기획자 아이패드로 업무 효율 올리기 - 아이패드 활용 꿀팁'
 description: '아이패드를 업무 도구로 활용하여 직접 겪은 꿀팁과 유용한 앱 추천 및 노하우 공유'
 pubDate: 'May 15 2026'
-category: 'ai-tools'
+category: 'gadgets'
 heroImage: '/images/post03.png'
 ---
 
